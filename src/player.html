@@ -1,0 +1,18 @@
+<style>
+  #m-zoomview, #m-overview {
+    height: 100px;
+    background: var(--pp-color-bg, #111);
+  }
+  #m-audio, #m-zoomview, #m-overview {
+    width: 1000px;
+  }
+  #m-root {
+    display: flex;
+    flex-direction: column;
+  }
+</style>
+<div id="m-root">
+  <audio controls id="m-audio"></audio>
+  <div id="m-zoomview"></div>
+  <div id="m-overview"></div>
+</div>

@@ -1,0 +1,36 @@
+{
+  "name": "peaks-player",
+  "license": "GPL-3",
+  "version": "1.0.0",
+  "description": "A Web Component for peaks.js",
+  "files": [
+    "README.md",
+    "LICENSE",
+    "dist"
+  ],
+  "main": "./dist/peaks-player.mjs",
+  "type": "module",
+  "homepage": "https://midirus.com/project/peaks-player",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TristanCacqueray/peaks-player.git"
+  },
+  "keywords": [
+    "peaks.js"
+  ],
+  "devDependencies": {
+    "vite": "^5.4.1"
+  },
+  "prettier": {
+    "arrowParens": "always",
+    "bracketSpacing": true,
+    "endOfLine": "lf",
+    "htmlWhitespaceSensitivity": "css",
+    "printWidth": 120
+  },
+  "dependencies": {
+    "konva": "^9.3.18",
+    "peaks.js": "^3.4.2",
+    "waveform-data": "^4.5.0"
+  }
+}

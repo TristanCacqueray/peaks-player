@@ -1,0 +1,92 @@
+<style>
+  :host {
+    /* The main background */
+    --clr-bg: var(--pp-color-bg, #111);
+    /* UI backdrop */
+    --clr-bg2: var(--pp-color-bg2, #222);
+    /* UI color */
+    --clr-fg: var(--pp-color-fg, #ddd);
+    /* UI button colors */
+    --clr-bg-btn: var(--pp-color-btn, #666);
+    --clr-over-btn: var(--pp-color-btn-over, #888);
+  }
+  * {
+      margin: 0; padding: 0;
+  }
+  #m-root {
+      display: flex;
+      flex-direction: column;
+  }
+  #m-info {
+    background: var(--clr-bg);
+    color: var(--clr-fg);
+    display: flex;
+    align-items: center;
+    place-content: center;
+    padding: 4px 8px;
+    box-sizing: border-box;
+    gap: 4px;
+    width: 1000px;
+  }
+  #m-title {
+      font-weight: bold;
+      flex-grow: 1
+  }
+  #m-dl {
+      font-weight: bold;
+      text-decoration: none;
+  }
+  #m-pos {
+      font-family: monospace;
+  }
+  a {
+      color: var(--clr-bg-btn);
+  }
+  button {
+    border-color: var(--clr-bg2);
+    background-color: var(--clr-bg-btn);
+    color: var(--clr-fg);
+    font-weight: 800;
+    border-radius: 3px;
+    width: 28px;
+    height: 20px;
+    font-family: monospace;
+    cursor: pointer;
+    padding-bottom: 18px;
+  }
+
+  li { background: var(--clr-bg); }
+  li:nth-child(odd) { background: var(--clr-bg2); }
+  #m-playlist {
+    width: 1000px;
+    background: var(--clr-bg);
+    color: var(--clr-fg);
+    box-sizing: border-box;
+    padding: 4px;
+    gap: 4px;
+  }
+  .m-track {
+    height: 30px;
+    display: flex;
+    align-items: center;
+    padding: 0 8px;
+    gap: 5px;
+  }
+  .m-playing {
+      border: 2px solid var(--clr-fg);
+      border-left: 4px dashed var(--clr-fg);
+  }
+</style>
+<div id="m-root">
+<div id="m-info">
+  <button id="m-prev">&lt;</button>
+  <div id="m-pos"></div>
+  <button id="m-next">&gt;</button>
+  Now playing:
+  <div id="m-title"></div>
+  <a id="m-dl" title="Download media">⇩</a>
+  <div id="m-date"></div>
+</div>
+<peaks-player id="m-player"></peaks-player>
+<ul id="m-playlist"></ul>
+</div>
