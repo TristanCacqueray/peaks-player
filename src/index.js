@@ -39,6 +39,41 @@ class PeaksPlayer extends HTMLElement {
     setAutoWidth(this.setWidth.bind(this));
   }
 
+  connectedCallback() {
+    if (this.firstMedia) {
+      // The media was provided before the canvas was loaded, init the peaks now.
+      this.initPeaks(this.firstMedia)
+    }
+    this.connected = true
+  }
+
+  initPeaks(firstMedia) {
+    const options = {
+      zoomview: {
+        container: this.zoomElt,
+        playheadColor: "pink",
+      },
+      overview: {
+        container: this.overviewElt,
+        waveformColor: "#ddd",
+        playheadColor: "pink",
+      },
+      mediaElement: this.audioElt,
+      dataUri: {
+        arraybuffer: firstMedia + ".dat",
+      },
+    };
+
+    let instance = this;
+    Peaks.init(options, function (err, peaks) {
+      if (err) {
+        console.error("Failed to initialize Peaks instance", err);
+      } else {
+        instance.peaks = peaks;
+      }
+    });
+  }
+
   attributeChangedCallback(name, oldValue, newValue) {
     if (name === "url") this.setUrl(newValue);
     else if (name === "width") this.setWidth(newValue);
@@ -59,30 +94,13 @@ class PeaksPlayer extends HTMLElement {
       srcElt.src = baseValue + ".mp3";
       srcElt.type = "audio/mpeg";
       this.audioElt.appendChild(srcElt);
-      const options = {
-        zoomview: {
-          container: this.zoomElt,
-          playheadColor: "pink",
-        },
-        overview: {
-          container: this.overviewElt,
-          waveformColor: "#ddd",
-          playheadColor: "pink",
-        },
-        mediaElement: this.audioElt,
-        dataUri: {
-          arraybuffer: baseValue + ".dat",
-        },
-      };
-
-      let instance = this;
-      Peaks.init(options, function (err, peaks) {
-        if (err) {
-          console.error("Failed to initialize Peaks instance", err);
-        } else {
-          instance.peaks = peaks;
-        }
-      });
+      if (this.connected) {
+        // The media was provided after the canvas was loaded, we can init the peaks now.
+        this.initPeaks(baseValue)
+      } else {
+        // Otherwise we'll wait for the canvbas to be loaded.
+        this.firstMedia = baseValue;
+      }
     } else {
       this.peaks.setSource({
         mediaUrl: baseValue + ".mp3",
@@ -142,7 +160,6 @@ class PeaksPlaylist extends HTMLElement {
     // TODO: listen to <audio> event directly
     const attachPlayerEvent = () => {
       if (this.playerElt.peaks) {
-        console.log("peak loaded, attaching event:");
         this.playerElt.peaks.on("player.pause", (time) => {
           console.log("paused", time);
         });
