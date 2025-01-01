@@ -15,7 +15,7 @@ function setAutoWidth(setWidth) {
   const screenWidth = window.innerWidth;
   if (screenWidth < 600) {
     // tiny screen should use all the available space
-    setWidth("100%");
+    setWidth((window.innerWidth - 20) + "px");
   } else if (screenWidth < 1000) {
     // small screen uses 600px
     setWidth("600px");
@@ -35,16 +35,16 @@ class PeaksPlayer extends HTMLElement {
     this.audioElt = this.shadowRoot.getElementById("m-audio");
     this.zoomElt = this.shadowRoot.getElementById("m-zoomview");
     this.overviewElt = this.shadowRoot.getElementById("m-overview");
-
-    setAutoWidth(this.setWidth.bind(this));
   }
 
   connectedCallback() {
+    setAutoWidth(this.setWidth.bind(this));
+
     if (this.firstMedia) {
       // The media was provided before the canvas was loaded, init the peaks now.
-      this.initPeaks(this.firstMedia)
+      this.initPeaks(this.firstMedia);
     }
-    this.connected = true
+    this.connected = true;
   }
 
   initPeaks(firstMedia) {
@@ -96,7 +96,7 @@ class PeaksPlayer extends HTMLElement {
       this.audioElt.appendChild(srcElt);
       if (this.connected) {
         // The media was provided after the canvas was loaded, we can init the peaks now.
-        this.initPeaks(baseValue)
+        this.initPeaks(baseValue);
       } else {
         // Otherwise we'll wait for the canvbas to be loaded.
         this.firstMedia = baseValue;
@@ -171,7 +171,9 @@ class PeaksPlaylist extends HTMLElement {
       }
     };
     setTimeout(attachPlayerEvent, 1000);
+  }
 
+  connectedCallback() {
     setAutoWidth(this.setWidth.bind(this));
   }
 
