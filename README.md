@@ -17,13 +17,16 @@ peaks-player provide two new elements:
 - `<peaks-player>`: a single player, like the `<audio>` element.
 - `<peaks-playlist>`: a playlist player, to play multiple files.
 
-To create the element, the following script must be added to the page head:
+To create the element, the `peaks-player.js` script needs to be loaded. For example, add the following to the page's headers:
 
 ```html
-<script type="module" src="peaks-player.js"></script>
+<script type="module" src="https://unpkg.com/peaks-player@1.0.0/dist/peaks-player.js"></script>
 ```
 
 ## Player
+
+![image](https://github.com/user-attachments/assets/dd463cd8-b928-4a33-8364-1329f3087c31)
+
 
 ```html
 <peaks-player url="./my-sound"></peaks-player>
@@ -35,6 +38,10 @@ Available properties:
 - width: A canvas fixed width, it default to 1000px, 600px or the window.width for small device.
 
 ## Playlist
+
+![image](https://github.com/user-attachments/assets/da21aa40-6f8f-4e41-8b12-2bedb3653b3c)
+
+
 
 The playlist is created using a list of track defined as:
 
@@ -62,5 +69,3 @@ Available properties:
 - url: The playlist data location. The track paths are relative to the dirname of the playlist.
 - pos: The starting file, defaults to 1.
 - width: The player width.
-
-The url must be the location of the following data:
