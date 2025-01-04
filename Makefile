@@ -4,5 +4,4 @@ dev:
 
 .PHONY: release
 release:
-# remove optional dependencies to reduce bundle size
 	npx vite build --minify --sourcemap
