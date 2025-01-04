@@ -160,9 +160,6 @@ class PeaksPlaylist extends HTMLElement {
     // TODO: listen to <audio> event directly
     const attachPlayerEvent = () => {
       if (this.playerElt.peaks) {
-        this.playerElt.peaks.on("player.pause", (time) => {
-          console.log("paused", time);
-        });
         this.playerElt.peaks.on("player.ended", () => {
           this.setPos((this.pos + 1) % this.items.length);
         });
@@ -180,11 +177,11 @@ class PeaksPlaylist extends HTMLElement {
   attributeChangedCallback(name, oldValue, newValue) {
     if (name === "url") this.setUrl(newValue);
     else if (name === "width") this.setWidth(newValue);
-    else if (name === "pos") this.setPos(newValue - 1);
+    else if (name === "pos") this.setPos(parseInt(newValue - 1));
   }
 
   setPos(pos) {
-    this.pos = parseInt(pos);
+    this.pos = pos;
     if (this.items) {
       this.loadItem(pos);
     }
@@ -197,8 +194,9 @@ class PeaksPlaylist extends HTMLElement {
   }
 
   setUrl(url) {
-    // return
-    this.baseUrl = url.substr(0, url.lastIndexOf("/"));
+    // remove json filename from the url
+    const basename = url.substr(0, url.lastIndexOf("/"))
+    this.baseUrl = URL.parse(basename, window.location.origin);
     fetch(new Request(url))
       .then((
         response,
@@ -208,10 +206,15 @@ class PeaksPlaylist extends HTMLElement {
 
   loadItem(pos) {
     const af = this.items[pos];
-    const url = this.baseUrl + "/" + af.path;
+    const url = af.path[0] == '/' ?
+          this.baseUrl.origin + af.path : this.baseUrl.href + "/" + af.path;
     this.titleElt.textContent = af.title;
-    this.dateElt.textContent = af.release;
-    this.dlElt.href = url + ".flac";
+    this.dateElt.textContent = af.date;
+    if (af.format && af.format.indexOf('flac') > 0) {
+      this.dlElt.href = url + ".flac";
+    } else {
+      this.dlElt.href = url + ".mp3";
+    }
     this.posElt.textContent = (pos + 1) + "/" + this.items.length;
 
     for (let i = 0; i < this.playlistElt.children.length; i++) {
@@ -229,12 +232,15 @@ class PeaksPlaylist extends HTMLElement {
 
   setItems(items) {
     this.items = items;
+    // Remove current dom items
     this.playlistElt.innerHtml = "";
     items.forEach((item, idx) => {
+      // Create a new playlist entry
       const trackElt = document.createElement("li");
       trackElt.classList.add("m-track");
       if (idx == this.pos) trackElt.classList.add("m-playing");
 
+      // The track number
       const posElt = document.createElement("button");
       posElt.textContent = idx + 1;
       trackElt.appendChild(posElt);
@@ -242,14 +248,16 @@ class PeaksPlaylist extends HTMLElement {
         this.setPos(idx);
       };
 
+      // The track title
       const titleElt = document.createElement("div");
       titleElt.style["flex-grow"] = 1;
       titleElt.textContent = item.title;
       trackElt.appendChild(titleElt);
 
+      // The track length
       const durElt = document.createElement("div");
       durElt.style["font-family"] = "monospace";
-      durElt.textContent = formatTime(item.nfo.meta.length);
+      durElt.textContent = formatTime(item.length || item.len);
       trackElt.appendChild(durElt);
 
       this.playlistElt.appendChild(trackElt);
